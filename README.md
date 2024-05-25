@@ -18,3 +18,4 @@ In order to keep organized and centralized, each project will be made into their
 More information about what each project does and the objectives, click on the links below.
 
 - chatbot: Simple Chat Bot (https://hyperskill.org/projects/206?track=25)
+- loancalc: Loan Calculator (https://hyperskill.org/projects/430?track=25)
