@@ -9,11 +9,17 @@ import (
 
 func main() {
 
+	fmt.Print("Enter the maximum number of notes: ")
+	var numberOfNotes int
+	_, _ = fmt.Scan(&numberOfNotes)
+	fmt.Println()
+
 	// Start with an empty notepad
 	notepad := make([]string, 0)
 	wordScanner := bufio.NewScanner(os.Stdin)
 
 	for {
+
 		fmt.Print("Enter a command and data: ")
 		_ = wordScanner.Scan()
 		input := strings.Split(wordScanner.Text(), " ")
@@ -21,7 +27,11 @@ func main() {
 
 		switch command {
 		case "create":
-			create(&notepad, data)
+			if len(data) == 0 {
+				fmt.Println("[Error] Missing note argument")
+			} else {
+				create(&notepad, data, numberOfNotes)
+			}
 		case "list":
 			list(notepad)
 		case "clear":
@@ -30,15 +40,16 @@ func main() {
 			fmt.Println("[INFO] Bye!")
 			os.Exit(0)
 		default:
-			fmt.Println(command)
+			fmt.Println("[Error] Unknown command")
 		}
 		fmt.Println()
 	}
 }
 
-func create(notepad *[]string, note string) {
+func create(notepad *[]string, note string, limit int) {
+
 	// Notepad is set to store up to 5 notes in memory
-	if len(*notepad) < 5 {
+	if len(*notepad) < limit {
 		*notepad = append(*notepad, note)
 		fmt.Println("[OK] The note was successfully created")
 	} else {
@@ -53,7 +64,7 @@ func clear(notepad *[]string) {
 
 func list(notepad []string) {
 	if len(notepad) == 0 {
-		return
+		fmt.Println("[Info] Notepad is empty")
 	} else {
 		for i, value := range notepad {
 			fmt.Printf("[Info] %d: %s\n", i+1, value)
