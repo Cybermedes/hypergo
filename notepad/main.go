@@ -8,6 +8,9 @@ import (
 )
 
 func main() {
+
+	// Start with an empty notepad
+	notepad := make([]string, 0)
 	wordScanner := bufio.NewScanner(os.Stdin)
 
 	for {
@@ -18,9 +21,11 @@ func main() {
 
 		switch command {
 		case "create":
-			fmt.Println(command, data)
+			create(&notepad, data)
 		case "list":
-			fmt.Println("list")
+			list(notepad)
+		case "clear":
+			clear(&notepad)
 		case "exit":
 			fmt.Println("[INFO] Bye!")
 			os.Exit(0)
@@ -28,5 +33,30 @@ func main() {
 			fmt.Println(command)
 		}
 		fmt.Println()
+	}
+}
+
+func create(notepad *[]string, note string) {
+	// Notepad is set to store up to 5 notes in memory
+	if len(*notepad) < 5 {
+		*notepad = append(*notepad, note)
+		fmt.Println("[OK] The note was successfully created")
+	} else {
+		fmt.Println("[Error] Notepad is full")
+	}
+}
+
+func clear(notepad *[]string) {
+	*notepad = make([]string, 0)
+	fmt.Println("[OK] All notes were successfully deleted")
+}
+
+func list(notepad []string) {
+	if len(notepad) == 0 {
+		return
+	} else {
+		for i, value := range notepad {
+			fmt.Printf("[Info] %d: %s\n", i+1, value)
+		}
 	}
 }
