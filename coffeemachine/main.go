@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 )
 
 type stockSupplies struct {
@@ -23,22 +24,28 @@ func main() {
 		money: 550,
 	}
 
-	printStock(&coffeeMachine)
-	fmt.Println("Write action (buy, fill, take):")
-	var action string
-	_, _ = fmt.Scan(&action)
+	for {
 
-	switch action {
-	case "buy":
-		buyCoffee(&coffeeMachine)
-	case "fill":
-		fillStock(&coffeeMachine)
-	case "take":
-		fmt.Println(emptyCashRegister(&coffeeMachine))
-	default:
-		fmt.Println("invalid option, write buy, fill or take")
+		fmt.Println("Write action (buy, fill, take, remaining, exit):")
+		var action string
+		_, _ = fmt.Scan(&action)
+		fmt.Println()
+
+		switch action {
+		case "buy":
+			buyCoffee(&coffeeMachine)
+		case "fill":
+			fillStock(&coffeeMachine)
+		case "take":
+			fmt.Println(emptyCashRegister(&coffeeMachine))
+		case "remaining":
+			printStock(&coffeeMachine)
+		case "exit":
+			os.Exit(0)
+		default:
+			fmt.Println("invalid option, write buy, fill, take, remaining or exit")
+		}
 	}
-	printStock(&coffeeMachine)
 }
 
 func printStock(stock *stockSupplies) {
@@ -53,6 +60,7 @@ func printStock(stock *stockSupplies) {
 
 func fillStock(stock *stockSupplies) {
 	// Prompt user for the initial inputs
+	fmt.Println()
 	fmt.Println("Write how many ml of water you want to add:")
 	var water int
 	_, _ = fmt.Scan(&water)
@@ -75,37 +83,65 @@ func fillStock(stock *stockSupplies) {
 
 func buyCoffee(stock *stockSupplies) {
 
-	fmt.Println("What do you want to buy? 1 - espresso, 2 - latte, 3 - cappuccino:")
-	var option int
+	fmt.Println()
+	fmt.Println("What do you want to buy? 1 - espresso, 2 - latte, 3 - cappuccino, back - to main menu:")
+	var option string
 	_, _ = fmt.Scan(&option)
 
 	switch option {
-	case 1:
+	case "1":
 		// Espresso
 		if stock.water >= 250 && stock.beans >= 16 && stock.cups >= 1 {
+			fmt.Println("I have enough resources, making you a coffee!")
 			stock.water -= 250
 			stock.beans -= 16
 			stock.cups -= 1
 			stock.money += 4
+		} else if stock.water < 250 {
+			fmt.Println("Sorry, not enough water!")
+		} else if stock.beans < 16 {
+			fmt.Println("Sorry, not enough beans!")
+		} else {
+			fmt.Println("Sorry, not enough cups!")
 		}
-	case 2:
+	case "2":
 		// Latte
 		if stock.water >= 350 && stock.milk >= 75 && stock.beans >= 20 && stock.cups >= 1 {
+			fmt.Println("I have enough resources, making you a coffee!")
 			stock.water -= 350
 			stock.milk -= 75
 			stock.beans -= 20
 			stock.cups -= 1
 			stock.money += 7
+		} else if stock.water < 350 {
+			fmt.Println("Sorry, not enough water!")
+		} else if stock.milk < 75 {
+			fmt.Println("Sorry, not enough milk!")
+		} else if stock.beans < 20 {
+			fmt.Println("Sorry, not enough beans!")
+		} else {
+			fmt.Println("Sorry, not enough cups!")
 		}
-	case 3:
+	case "3":
 		// Cappuccino
 		if stock.water >= 200 && stock.milk >= 100 && stock.beans >= 12 && stock.cups >= 1 {
+			fmt.Println("I have enough resources, making you a coffee!")
 			stock.water -= 200
 			stock.milk -= 100
 			stock.beans -= 12
 			stock.cups -= 1
 			stock.money += 6
+		} else if stock.water < 200 {
+			fmt.Println("Sorry, not enough water!")
+		} else if stock.milk < 100 {
+			fmt.Println("Sorry, not enough milk!")
+		} else if stock.beans < 12 {
+			fmt.Println("Sorry, not enough beans!")
+		} else {
+			fmt.Println("Sorry, not enough cups!")
 		}
+	case "back":
+		return
 	default:
 		fmt.Println("invalid option")
 	}
@@ -115,5 +151,5 @@ func buyCoffee(stock *stockSupplies) {
 func emptyCashRegister(stock *stockSupplies) string {
 	cash := stock.money
 	stock.money = 0
-	return fmt.Sprintf("I gave you $%d", cash)
+	return fmt.Sprintf("I gave you $%d\n", cash)
 }
