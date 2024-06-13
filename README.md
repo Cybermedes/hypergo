@@ -19,3 +19,6 @@ More information about what each project does and the objectives, click on the l
 
 - chatbot: Simple Chat Bot (https://hyperskill.org/projects/206?track=25)
 - loancalc: Loan Calculator (https://hyperskill.org/projects/430?track=25)
+- notepad: In-Memory Notepad (https://hyperskill.org/projects/238?track=25)
+- cinemaroom: Cinema Room Manager (https://hyperskill.org/projects/399?track=25)
+- coffeemachine: Coffee Machine (https://hyperskill.org/projects/194?track=25)
