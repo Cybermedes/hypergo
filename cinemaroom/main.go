@@ -8,7 +8,7 @@ import (
 func main() {
 
 	// Cinema dimensions and matrix of the rows and seats
-	var rows, seats int
+	var rows, seats, balance, ticketsSold int
 	fmt.Println("Enter the number of rows:")
 	_, _ = fmt.Scan(&rows)
 	fmt.Println("Enter the number of seats in each row:")
@@ -21,14 +21,17 @@ func main() {
 		fmt.Println()
 		fmt.Println("1. Show the seats")
 		fmt.Println("2. Buy a ticket")
+		fmt.Println("3. Statistics")
 		fmt.Println("0. Exit")
 		_, _ = fmt.Scan(&option)
 
 		switch option {
 		case 1:
-			PrintCinemaLayout(cinema)
+			printCinemaLayout(cinema)
 		case 2:
-			buyTicket(rows, seats, &cinema)
+			buyTicket(rows, seats, &cinema, &balance, &ticketsSold)
+		case 3:
+			showStatistics(rows, seats, &ticketsSold, &balance)
 		case 0:
 			return
 		default:
@@ -57,7 +60,7 @@ func generateCinema(rows, columns int) [][]string {
 	return cinema
 }
 
-func PrintCinemaLayout(cinema [][]string) {
+func printCinemaLayout(cinema [][]string) {
 	fmt.Printf("\nCinema:\n")
 	for i := 0; i < len(cinema); i++ {
 		for j := 0; j < len(cinema[i]); j++ {
@@ -67,7 +70,7 @@ func PrintCinemaLayout(cinema [][]string) {
 	}
 }
 
-func CalculateMaximumIncome(rows, seats int) int {
+func calculateMaximumIncome(rows, seats int) int {
 	if rows*seats < 60 {
 		return rows * seats * 10
 	} else {
@@ -79,21 +82,35 @@ func CalculateMaximumIncome(rows, seats int) int {
 	}
 }
 
-func buyTicket(rows, seats int, cine *[][]string) {
-	var rowNumber, seatNumber int
-	fmt.Println()
-	fmt.Println("Enter a row number:")
-	_, _ = fmt.Scan(&rowNumber)
-	fmt.Println("Enter a seat number in that row:")
-	_, _ = fmt.Scan(&seatNumber)
+func buyTicket(rows, seats int, cine *[][]string, balance, ticket *int) {
 
-	(*cine)[rowNumber][seatNumber] = "B"
+	for {
+		var rowNumber, seatNumber int
+		fmt.Println()
+		fmt.Println("Enter a row number:")
+		_, _ = fmt.Scan(&rowNumber)
+		fmt.Println("Enter a seat number in that row:")
+		_, _ = fmt.Scan(&seatNumber)
 
-	fmt.Printf("Ticket price: $%d\n", checkPrice(rows, seats, rowNumber))
+		if rowNumber > rows || seatNumber > seats {
+			fmt.Printf("\nWrong input!\n")
+			continue
+		}
 
+		if (*cine)[rowNumber][seatNumber] == "B" {
+			fmt.Printf("\nThat ticket has already been purchased!\n")
+		} else {
+			(*cine)[rowNumber][seatNumber] = "B"
+			ticketPrice := checkSeatPrice(rows, seats, rowNumber)
+			*balance += ticketPrice
+			*ticket += 1
+			fmt.Printf("\nTicket price: $%d\n", ticketPrice)
+			return
+		}
+	}
 }
 
-func checkPrice(rows, seats, rowNumber int) int {
+func checkSeatPrice(rows, seats, rowNumber int) int {
 	if rows*seats < 60 {
 		return 10
 	} else {
@@ -103,4 +120,14 @@ func checkPrice(rows, seats, rowNumber int) int {
 			return 8
 		}
 	}
+}
+
+func showStatistics(rows, seats int, ticketsSold, balance *int) {
+
+	occupancy := (float64(*ticketsSold) / float64(rows*seats)) * 100
+	fmt.Println()
+	fmt.Printf("Number of purchased tickets: %d\n", *ticketsSold)
+	fmt.Printf("Percentage: %.2f%%\n", occupancy)
+	fmt.Printf("Current income: $%d\n", *balance)
+	fmt.Printf("Total income: $%d\n", calculateMaximumIncome(rows, seats))
 }
