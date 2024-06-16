@@ -6,22 +6,31 @@ import (
 )
 
 func main() {
+
+	// Cinema dimensions and matrix of the rows and seats
 	var rows, seats int
 	fmt.Println("Enter the number of rows:")
 	_, _ = fmt.Scan(&rows)
 	fmt.Println("Enter the number of seats in each row:")
 	_, _ = fmt.Scan(&seats)
+	cinema := generateCinema(rows, seats)
 
-	income := calculateMaximumIncome(rows, seats)
-	fmt.Println("Total income:")
-	fmt.Printf("$%d\n", income)
+	// First print the empty cinema with empty seats. 'S' is for available seat
+	PrintCinemaLayout(cinema)
+
+	// Buy a ticket
+	buyTicket(rows, seats, &cinema)
+
+	// Print the cinema with updated seats
+	PrintCinemaLayout(cinema)
+
 }
 
-func GenerateCinema(rows, columns int) [][]string {
+func generateCinema(rows, columns int) [][]string {
 
-	cinema := make([][]string, rows)
+	cinema := make([][]string, rows+1)
 	for i := range cinema {
-		cinema[i] = make([]string, columns)
+		cinema[i] = make([]string, columns+1)
 		for j := range cinema[i] {
 			if i == 0 {
 				cinema[i][j] = strconv.Itoa(j)
@@ -37,15 +46,18 @@ func GenerateCinema(rows, columns int) [][]string {
 }
 
 func PrintCinemaLayout(cinema [][]string) {
+	fmt.Printf("\nCinema:\n")
+	fmt.Println()
 	for i := 0; i < len(cinema); i++ {
 		for j := 0; j < len(cinema[i]); j++ {
 			fmt.Printf("%s ", cinema[i][j])
 		}
 		fmt.Println()
 	}
+	fmt.Println()
 }
 
-func calculateMaximumIncome(rows, seats int) int {
+func CalculateMaximumIncome(rows, seats int) int {
 	if rows*seats < 60 {
 		return rows * seats * 10
 	} else {
@@ -53,6 +65,31 @@ func calculateMaximumIncome(rows, seats int) int {
 			return 8*(rows/2)*seats + 10*(rows/2)*seats
 		} else {
 			return 8*(rows/2+1)*seats + 10*(rows/2)*seats
+		}
+	}
+}
+
+func buyTicket(rows, seats int, cine *[][]string) {
+	var rowNumber, seatNumber int
+	fmt.Println("Enter a row number:")
+	_, _ = fmt.Scan(&rowNumber)
+	fmt.Println("Enter a seat number in that row:")
+	_, _ = fmt.Scan(&seatNumber)
+
+	(*cine)[rowNumber][seatNumber] = "B"
+
+	fmt.Printf("\nTicket price: $%d\n", checkPrice(rows, seats, rowNumber))
+
+}
+
+func checkPrice(rows, seats, rowNumber int) int {
+	if rows*seats < 60 {
+		return 10
+	} else {
+		if rowNumber <= rows/2 {
+			return 10
+		} else {
+			return 8
 		}
 	}
 }
